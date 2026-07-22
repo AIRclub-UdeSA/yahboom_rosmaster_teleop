@@ -1,0 +1,24 @@
+teleop_twist_joy_node:
+  ros__parameters:
+    # --- Traslación: stick derecho ---
+    axis_linear:
+      x: 4        # stick derecho vertical -> adelante/atrás
+      y: 3        # stick derecho horizontal -> izquierda/derecha (strafe)
+    scale_linear:
+      x: 0.5
+      y: 0.5
+    scale_linear_turbo:
+      x: 1.0
+      y: 1.0
+
+    # --- Rotación: stick izquierdo ---
+    axis_angular:
+      yaw: 0      # stick izquierdo horizontal -> giro
+    scale_angular:
+      yaw: 1.0
+    scale_angular_turbo:
+      yaw: 2.0
+
+    # --- Seguridad ---
+    enable_button: 5        # botón "hombre muerto" normal (ej: LB/L1)
+    enable_turbo_button: 4  # botón para modo turbo (ej: RB/R1)
