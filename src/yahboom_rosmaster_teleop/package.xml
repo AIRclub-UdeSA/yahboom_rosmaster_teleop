@@ -3,10 +3,9 @@
 <package format="3">
   <name>yahboom_rosmaster_teleop</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="hola@claus.com.ar">admlinar</maintainer>
-  <license>TODO: License declaration</license>
-
+  <description>Joystick teleoperation package for the real ROSMASTER X3 robot</description>
+  <maintainer email="AIRClub@udesa.edu.ar">AIRclub-UdeSA</maintainer>
+  <license>BSD-3-Clause</license>
 
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>

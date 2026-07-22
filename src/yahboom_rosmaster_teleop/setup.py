@@ -17,10 +17,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='admlinar',
-    maintainer_email='hola@claus.com.ar',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer='AIRclub-UdeSA',
+    maintainer_email='AIRClub@udesa.edu.ar',
+    description='Joystick teleoperation package for the real ROSMASTER X3 robot',
+    license='BSD-3-Clause',
     extras_require={
         'test': [
             'pytest',

@@ -56,7 +56,7 @@ source install/setup.bash
 | Hold L1 / LB | Turbo speed |
 | Button A | Increase speed |
 | Button B | Decrease speed |
-| Stop Y | Emergency stop (speed = 0, no auto-resume) |
+| Button Y | Emergency stop (speed = 0, no auto-resume) |
 | Right stick | Forward/backward, strafe (left/right) |
 | Left stick | Turn (yaw) |
 

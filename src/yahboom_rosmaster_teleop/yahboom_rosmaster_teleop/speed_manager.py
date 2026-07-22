@@ -4,16 +4,15 @@ from sensor_msgs.msg import Joy
 from rcl_interfaces.srv import SetParameters
 from rcl_interfaces.msg import Parameter, ParameterValue, ParameterType
 
-BTN_X = 0        # sube velocidad
-BTN_CIRCLE = 1   # baja velocidad
-BTN_STOP = 3     # <-- confirmar índice real de Y con ros2 topic echo /joy
-
+BTN_X = 0        # increase speed (A)
+BTN_CIRCLE = 1   # decrease speed (B)
+BTN_STOP = 3     # emergency stop (Y)
 STEP = 0.1
 MIN_SCALE = 0.1
 MAX_SCALE = 1.0
 
-INITIAL_LINEAR = 0.5   # igual al scale_linear del yaml
-INITIAL_ANGULAR = 1.0  # igual al scale_angular del yaml
+INITIAL_LINEAR = 0.5   # same as scale_linear in the yaml
+INITIAL_ANGULAR = 1.0  # same as scale_angular in the yaml
 
 
 class SpeedManager(Node):
@@ -30,12 +29,12 @@ class SpeedManager(Node):
         self.set_param_cli = self.create_client(
             SetParameters, '/teleop_twist_joy_node/set_parameters')
 
-        self.get_logger().info('Esperando servicio set_parameters de teleop_twist_joy_node...')
+        self.get_logger().info('Waiting for set_parameters service from teleop_twist_joy_node...')
         while not self.set_param_cli.wait_for_service(timeout_sec=2.0):
-            self.get_logger().info('Sigo esperando...')
+            self.get_logger().info('Still waiting...')
 
         self.get_logger().info(
-            f'Speed manager listo. Lineal: {self.linear_scale}, Angular: {self.angular_scale}')
+            f'Speed manager ready. Linear: {self.linear_scale}, Angular: {self.angular_scale}')
 
     def joy_cb(self, msg: Joy):
         if not self.prev_buttons or len(self.prev_buttons) != len(msg.buttons):
@@ -47,15 +46,16 @@ class SpeedManager(Node):
         stop_pressed = msg.buttons[BTN_STOP] == 1 and self.prev_buttons[BTN_STOP] == 0
 
         if stop_pressed:
-            # Frena TODO: lineal y angular en 0.0.
-            # No hay reanudación automática al re-tocar Y.
+            # Stops EVERYTHING: linear and angular set to 0.0.
+            # There is no automatic resume when pressing Y again.
             self.stopped = True
-            self.get_logger().warn('FRENO DE EMERGENCIA: velocidad en 0.0')
+            self.get_logger().warn('EMERGENCY STOP: speed set to 0.0')
             self.push_params(0.0, 0.0)
 
         elif x_pressed:
-            # Al subir velocidad, si estaba frenado, sale del estado de freno
-            # y retoma desde el mínimo (no desde donde estaba antes de frenar).
+            # When increasing speed, if it was stopped, exit the stopped
+            # state and resume from the minimum (not from the value it had
+            # before stopping).
             if self.stopped:
                 self.stopped = False
                 self.linear_scale = MIN_SCALE
@@ -63,12 +63,12 @@ class SpeedManager(Node):
             else:
                 self.linear_scale = min(MAX_SCALE, round(self.linear_scale + STEP, 2))
 
-            self.get_logger().info(f'Nueva velocidad lineal: {self.linear_scale}')
+            self.get_logger().info(f'New linear speed: {self.linear_scale}')
             self.push_params(self.linear_scale, self.angular_scale)
 
         elif o_pressed and not self.stopped:
             self.linear_scale = max(MIN_SCALE, round(self.linear_scale - STEP, 2))
-            self.get_logger().info(f'Nueva velocidad lineal: {self.linear_scale}')
+            self.get_logger().info(f'New linear speed: {self.linear_scale}')
             self.push_params(self.linear_scale, self.angular_scale)
 
         self.prev_buttons = list(msg.buttons)
